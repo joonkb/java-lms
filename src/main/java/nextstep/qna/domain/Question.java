@@ -82,21 +82,16 @@ public class Question {
         return deleted;
     }
 
-    public List<DeleteHistory> delete(NsUser loginUser) throws CannotDeleteException {
+    public void delete(NsUser loginUser) throws CannotDeleteException {
         if (!this.isOwner(loginUser)) {
             throw new CannotDeleteException("질문을 삭제할 권한이 없습니다.");
         }
-        
-        if (!answers.isOwner(loginUser)) {
-            throw new CannotDeleteException("다른 사람이 쓴 답변이 있어 삭제할 수 없습니다.");
-        }
 
         this.deleted = true;
-
-        return createDeleteHistory();
+        answers.delete(loginUser);
     }
 
-    private List<DeleteHistory> createDeleteHistory() {
+    public List<DeleteHistory> toDeleteHistory() {
         List<DeleteHistory> deleteHistories = new ArrayList<>();
         deleteHistories.add(new DeleteHistory(ContentType.QUESTION, this.id, this.getWriter(), LocalDateTime.now()));
         deleteHistories.addAll(answers.createDeleteHistory());
