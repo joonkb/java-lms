@@ -29,7 +29,7 @@ public class SessionTest {
 
     @Test
     void 수강신청_실패_최대수강인원_초과() {
-        Session session = new Session("TDD/클린코드", SessionType.PAID, 1000, 1, startDate, endDate);
+        Session session = new Session("TDD/클린코드", SessionType.PAID, 1000L, 1, startDate, endDate);
         session.openEnrollment();
         session.enroll(NsUserTest.SANJIGI);
         assertThatThrownBy(() -> {
