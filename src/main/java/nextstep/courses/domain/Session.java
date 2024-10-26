@@ -62,13 +62,17 @@ public class Session {
     }
 
     private void canEnroll() {
-        if (status != SessionStatus.RECRUITING) {
+        if (SessionStatus.canEnroll(status)) {
             throw new IllegalArgumentException("현재 모집중인 상태가 아닙니다.");
         }
 
-        if (type == SessionType.PAID && students.size() >= maxEnrollment) {
+        if (isOverMaxEnrollment()) {
             throw new IllegalArgumentException("최대 수강 인원을 초과하였습니다.");
         }
+    }
+
+    private boolean isOverMaxEnrollment() {
+        return type == SessionType.PAID && students.size() >= maxEnrollment;
     }
 
     @Override
