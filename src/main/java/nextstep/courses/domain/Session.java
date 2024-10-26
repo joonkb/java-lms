@@ -1,5 +1,6 @@
 package nextstep.courses.domain;
 
+import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,8 @@ public class Session {
 
     private int maxEnrollment;
 
+    private CoverImage image;
+
     private List<NsUser> students = new ArrayList<>();
 
     private LocalDateTime startDate;
@@ -37,15 +40,20 @@ public class Session {
         this.endDate = endDate;
     }
 
-    public Session(Long id, String title, LocalDateTime startDate, LocalDateTime endDate) {
+    public Session(Long id, String title, Long price, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
+        this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
     public Session(String title, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, startDate, endDate);
+        this(1L, title, 0L, startDate, endDate);
+    }
+
+    public Session(String title, Long price, LocalDateTime startDate, LocalDateTime endDate) {
+        this(1L, title, price, startDate, endDate);
     }
 
     public Session(String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
@@ -56,18 +64,26 @@ public class Session {
         return id;
     }
 
+    public Long getPrice() {
+        return price;
+    }
 
     public void openEnrollment() {
         this.status = SessionStatus.RECRUITING;
     }
 
-    public void enroll(NsUser user) {
-        canEnroll();
+    public void enroll(NsUser user, Payment payment) {
+        canEnroll(payment);
         students.add(user);
     }
 
-    private void canEnroll() {
-        if (SessionStatus.canEnroll(status)) {
+    private void canEnroll(Payment payment) {
+
+        if (!this.price.equals(payment.getAmount())) {
+            throw new CannotRegisterException("결제한 금액과 수강료가 일치하지 않습니다.");
+        }
+
+        if (!SessionStatus.canEnroll(status)) {
             throw new CannotRegisterException("현재 모집중인 상태가 아닙니다.");
         }
 
@@ -78,6 +94,10 @@ public class Session {
 
     private boolean isOverMaxEnrollment() {
         return type == SessionType.PAID && students.size() >= maxEnrollment;
+    }
+
+    public void uploadCoverImage(CoverImage image) {
+        this.image = image;
     }
 
     @Override

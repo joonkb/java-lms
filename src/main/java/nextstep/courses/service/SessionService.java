@@ -20,7 +20,7 @@ public class SessionService {
     @Transactional
     public void enrollSession(NsUser loginUser, long sessionId) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundException::new);
-        session.enroll(loginUser);
         Payment payment = paymentService.payment(session, loginUser);
+        session.enroll(loginUser, payment);
     }
 }

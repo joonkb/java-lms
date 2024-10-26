@@ -19,6 +19,10 @@ public class Payment {
     public Payment() {
     }
 
+    public Long getAmount() {
+        return amount;
+    }
+
     public Payment(Long id, Long sessionId, Long nsUserId, Long amount) {
         this.id = id;
         this.sessionId = sessionId;
