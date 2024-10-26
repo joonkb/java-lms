@@ -17,7 +17,7 @@ public class Session {
 
     private SessionStatus status = SessionStatus.PREPARING;
 
-    private int price;
+    private Long price;
 
     private int maxEnrollment;
 
@@ -27,7 +27,7 @@ public class Session {
 
     private LocalDateTime endDate;
 
-    public Session(Long id, String title, SessionType type, int price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+    public Session(Long id, String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
         this.type = type;
@@ -48,9 +48,14 @@ public class Session {
         this(1L, title, startDate, endDate);
     }
 
-    public Session(String title, SessionType type, int price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+    public Session(String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
         this(1L, title, type, price, maxEnrollment, startDate, endDate);
     }
+
+    public Long getId() {
+        return id;
+    }
+
 
     public void openEnrollment() {
         this.status = SessionStatus.RECRUITING;
@@ -63,11 +68,11 @@ public class Session {
 
     private void canEnroll() {
         if (SessionStatus.canEnroll(status)) {
-            throw new IllegalArgumentException("현재 모집중인 상태가 아닙니다.");
+            throw new CannotRegisterException("현재 모집중인 상태가 아닙니다.");
         }
 
         if (isOverMaxEnrollment()) {
-            throw new IllegalArgumentException("최대 수강 인원을 초과하였습니다.");
+            throw new CannotRegisterException("최대 수강 인원을 초과하였습니다.");
         }
     }
 
