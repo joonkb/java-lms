@@ -5,6 +5,8 @@ public class CoverImage {
     private static final int MAX_FILE_SIZE_KB = 1024;
     private static final int RATIO_WIDTH = 3;
     private static final int RATIO_HEIGHT = 2;
+    private static final int MIN_WIDTH_PIXEL = 300;
+    private static final int MIN_HEIGHT_PIXEL = 200;
 
     private String title;
     private String format;
@@ -33,9 +35,17 @@ public class CoverImage {
         if (!isValidRatio(width, height)) {
             throw new CannotRegisterException("유효하지 않는 포맷입니다.");
         }
+
+        if (!isValidPixel(width, height)) {
+            throw new CannotRegisterException("이미지의 width는 300픽셀, height는 200픽셀 이상이어야 합니다.");
+        }
     }
 
     private boolean isValidRatio(int width, int height) {
         return width * RATIO_HEIGHT == height * RATIO_WIDTH;
+    }
+
+    private boolean isValidPixel(int width, int height) {
+        return width >= MIN_WIDTH_PIXEL && height >= MIN_HEIGHT_PIXEL;
     }
 }
