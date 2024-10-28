@@ -25,7 +25,7 @@ public class CoverImage {
 
     private void validateInput(String format, int fileSize, int width, int height) {
         if (fileSize > MAX_FILE_SIZE_KB) {
-            throw new CannotRegisterException("이미지 크기는 1MB 이하여야 합니다.");
+            throw new CannotRegisterException("이미지 크기는 1MB(1024KB) 이하이여야 합니다.");
         }
 
         if (!ImageFormat.isValidFormat(format)) {
@@ -33,7 +33,7 @@ public class CoverImage {
         }
 
         if (!isValidRatio(width, height)) {
-            throw new CannotRegisterException("유효하지 않는 포맷입니다.");
+            throw new CannotRegisterException("width와 height의 비율은 3:2여야 합니다.");
         }
 
         if (!isValidPixel(width, height)) {
