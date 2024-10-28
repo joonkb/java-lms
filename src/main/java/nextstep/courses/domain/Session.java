@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Session {
+public abstract class Session {
 
     private Long id;
 
@@ -18,10 +18,6 @@ public class Session {
 
     private SessionStatus status = SessionStatus.PREPARING;
 
-    private Long price;
-
-    private int maxEnrollment;
-
     private CoverImage image;
 
     private List<NsUser> students = new ArrayList<>();
@@ -30,74 +26,44 @@ public class Session {
 
     private LocalDateTime endDate;
 
-    public Session(Long id, String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+    public Session(Long id, String title, SessionType type, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
         this.type = type;
-        this.price = price;
-        this.maxEnrollment = maxEnrollment;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Session(Long id, String title, Long price, LocalDateTime startDate, LocalDateTime endDate) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
-
-    public Session(String title, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, 0L, startDate, endDate);
-    }
-
-    public Session(String title, Long price, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, price, startDate, endDate);
-    }
-
-    public Session(String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, type, price, maxEnrollment, startDate, endDate);
+    public Session(String title, SessionType type, LocalDateTime startDate, LocalDateTime endDate) {
+        this(1L, title, type, startDate, endDate);
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getPrice() {
-        return price;
-    }
-
     public void openEnrollment() {
         this.status = SessionStatus.RECRUITING;
     }
 
-    public void enroll(NsUser user, Payment payment) {
-        canEnroll(payment);
-        students.add(user);
+    public void uploadCoverImage(CoverImage image) {
+        this.image = image;
     }
 
-    private void canEnroll(Payment payment) {
+    public abstract void enroll(NsUser user, Payment payment);
 
-        if (!this.price.equals(payment.getAmount())) {
-            throw new CannotRegisterException("결제한 금액과 수강료가 일치하지 않습니다.");
-        }
-
+    protected void validateRecruitingStatus() {
         if (!SessionStatus.canEnroll(status)) {
             throw new CannotRegisterException("현재 모집중인 상태가 아닙니다.");
         }
-
-        if (isOverMaxEnrollment()) {
-            throw new CannotRegisterException("최대 수강 인원을 초과하였습니다.");
-        }
     }
 
-    private boolean isOverMaxEnrollment() {
-        return type == SessionType.PAID && students.size() >= maxEnrollment;
+    protected int getCurrentStudentCount() {
+        return students.size();
     }
 
-    public void uploadCoverImage(CoverImage image) {
-        this.image = image;
+    protected void addStudent(NsUser user) {
+        students.add(user);
     }
 
     @Override
