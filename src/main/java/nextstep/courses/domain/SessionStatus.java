@@ -5,9 +5,6 @@ public enum SessionStatus {
     ;
 
     public static boolean canEnroll(SessionStatus status) {
-        if (status == RECRUITING) {
-            return true;
-        }
-        return false;
+        return status == RECRUITING;
     }
 }

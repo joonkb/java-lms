@@ -1,6 +1,10 @@
 package nextstep.courses.domain;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public enum ImageFormat {
     GIF("gif"),
@@ -12,6 +16,9 @@ public enum ImageFormat {
 
     private String format;
 
+    private static Map<String, ImageFormat> cachedMap = Collections.unmodifiableMap(Arrays.stream(values())
+            .collect(Collectors.toMap(ImageFormat::getFormat, Function.identity())));
+
     ImageFormat(String format) {
         this.format = format;
     }
@@ -21,8 +28,6 @@ public enum ImageFormat {
     }
 
     public static boolean isValidFormat(String type) {
-        return Arrays.stream(values())
-                .map(ImageFormat::getFormat)
-                .anyMatch(value -> value.equals(type));
+        return cachedMap.containsKey(type);
     }
 }
