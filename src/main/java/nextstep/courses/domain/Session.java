@@ -20,22 +20,25 @@ public abstract class Session {
 
     private CoverImage image;
 
+    protected Long price;
+
     private List<NsUser> students = new ArrayList<>();
 
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
-    public Session(Long id, String title, SessionType type, LocalDateTime startDate, LocalDateTime endDate) {
+    public Session(Long id, String title, SessionType type, Long price, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
         this.type = type;
+        this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Session(String title, SessionType type, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, type, startDate, endDate);
+    public Session(String title, SessionType type, Long price, LocalDateTime startDate, LocalDateTime endDate) {
+        this(1L, title, type, price, startDate, endDate);
     }
 
     public Long getId() {
@@ -64,6 +67,10 @@ public abstract class Session {
 
     protected void addStudent(NsUser user) {
         students.add(user);
+    }
+
+    public Long getPrice() {
+        return price;
     }
 
     @Override

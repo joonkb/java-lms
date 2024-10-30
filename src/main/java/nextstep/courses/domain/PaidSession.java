@@ -7,17 +7,11 @@ import java.time.LocalDateTime;
 
 public class PaidSession extends Session {
 
-    private Long price;
     private int maxEnrollment;
 
     public PaidSession(String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
-        super(1L, title, type, startDate, endDate);
-        this.price = price;
+        super(1L, title, type, price, startDate, endDate);
         this.maxEnrollment = maxEnrollment;
-    }
-
-    public Long getPrice() {
-        return price;
     }
 
     @Override

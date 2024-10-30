@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class FreeSession extends Session {
 
     public FreeSession(Long id, String title, SessionType type, LocalDateTime startDate, LocalDateTime endDate) {
-        super(id, title, type, startDate, endDate);
+        super(id, title, type, 0L, startDate, endDate);
     }
 
     public FreeSession(String title, SessionType type, LocalDateTime startDate, LocalDateTime endDate) {
