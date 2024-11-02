@@ -45,6 +45,22 @@ public abstract class Session {
         return id;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public SessionType getType() {
+        return type;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
     public void openEnrollment() {
         this.status = SessionStatus.RECRUITING;
     }
