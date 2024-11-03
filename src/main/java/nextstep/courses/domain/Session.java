@@ -28,6 +28,16 @@ public abstract class Session {
 
     private LocalDateTime endDate;
 
+    public Session(Long id, String title, SessionType type, SessionStatus status, Long price, LocalDateTime startDate, LocalDateTime endDate) {
+        this.id = id;
+        this.title = title;
+        this.type = type;
+        this.status = status;
+        this.price = price;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public Session(Long id, String title, SessionType type, Long price, LocalDateTime startDate, LocalDateTime endDate) {
         this.id = id;
         this.title = title;
@@ -38,7 +48,11 @@ public abstract class Session {
     }
 
     public Session(String title, SessionType type, Long price, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, type, price, startDate, endDate);
+        this.title = title;
+        this.type = type;
+        this.price = price;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getId() {
@@ -51,6 +65,10 @@ public abstract class Session {
 
     public SessionType getType() {
         return type;
+    }
+
+    public SessionStatus getStatus() {
+        return status;
     }
 
     public LocalDateTime getStartDate() {
@@ -67,6 +85,10 @@ public abstract class Session {
 
     public void uploadCoverImage(CoverImage image) {
         this.image = image;
+    }
+
+    public boolean isFreeSession() {
+        return type == SessionType.FREE;
     }
 
     public abstract void enroll(NsUser user, Payment payment);
@@ -100,5 +122,14 @@ public abstract class Session {
     @Override
     public int hashCode() {
         return Objects.hash(id, startDate, endDate);
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                '}';
     }
 }

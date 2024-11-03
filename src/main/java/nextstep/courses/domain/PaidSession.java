@@ -9,9 +9,32 @@ public class PaidSession extends Session {
 
     private int maxEnrollment;
 
-    public PaidSession(String title, SessionType type, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
-        super(1L, title, type, price, startDate, endDate);
+    public PaidSession(String title, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+        super(1L, title, SessionType.PAID, price, startDate, endDate);
         this.maxEnrollment = maxEnrollment;
+    }
+
+    public PaidSession(String title, SessionStatus status, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+        super(1L, title, SessionType.PAID, status, price, startDate, endDate);
+        this.maxEnrollment = maxEnrollment;
+    }
+
+    public PaidSession(Long id, String title, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+        super(id, title, SessionType.PAID, price, startDate, endDate);
+        this.maxEnrollment = maxEnrollment;
+    }
+
+    public PaidSession(Long id, String title, SessionStatus status, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+        super(id, title, SessionType.PAID, status, price, startDate, endDate);
+        this.maxEnrollment = maxEnrollment;
+    }
+
+    public PaidSession(Long id, String title, String status, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+        this(id, title, SessionStatus.valueOf(status), price, maxEnrollment, startDate, endDate);
+    }
+
+    public int getMaxEnrollment() {
+        return maxEnrollment;
     }
 
     @Override
@@ -21,6 +44,7 @@ public class PaidSession extends Session {
     }
 
     private void canEnroll(Payment payment) {
+
         validateRecruitingStatus();
 
         if (!price.equals(payment.getAmount())) {
