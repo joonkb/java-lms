@@ -17,7 +17,7 @@ class FreeSessionTest {
     @Test
     @DisplayName("강의 수강신청은 강의 상태가 모집중일 때만 가능하다.")
     void enrollTest01() {
-        Session session = new FreeSession("TDD/클린코드", SessionType.FREE, startDate, endDate);
+        Session session = new FreeSession("TDD/클린코드", startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.JAVAJIGI.getId(), 0L);
         assertThatThrownBy(() -> {
             session.enroll(NsUserTest.JAVAJIGI, payment);
@@ -27,7 +27,7 @@ class FreeSessionTest {
     @Test
     @DisplayName("")
     void 수강신청_성공() {
-        Session session = new FreeSession("TDD/클린코드", SessionType.FREE, startDate, endDate);
+        Session session = new FreeSession("TDD/클린코드", startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), 0L);
 
         session.openEnrollment();
