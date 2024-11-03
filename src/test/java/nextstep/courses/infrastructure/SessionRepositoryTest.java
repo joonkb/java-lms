@@ -1,9 +1,10 @@
 package nextstep.courses.infrastructure;
 
 import nextstep.courses.domain.FreeSession;
+import nextstep.courses.domain.PaidSession;
 import nextstep.courses.domain.Session;
 import nextstep.courses.domain.SessionRepository;
-import nextstep.courses.domain.SessionType;
+import nextstep.qna.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,14 +34,41 @@ class SessionRepositoryTest {
     }
 
     @Test
-    @DisplayName("주어진 FreeSession이 정상적으로 저장되는지 확인한다.")
-    void saveFreeSession() {
+    @DisplayName("주어진 FreeSession을 저장히고 조회한다.")
+    void saveFreeSessionAndFindById() {
         LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
         LocalDateTime endDate = startDate.plusMonths(2);
-
-        Session session = new FreeSession(1L, "TDD 자바 클린코드", SessionType.FREE, startDate, endDate);
+        Session session = new FreeSession(2L, "TDD 자바 클린코드", startDate, endDate);
         int count = sessionRepository.save(session);
         assertThat(count).isEqualTo(1);
+        Session savedSession = sessionRepository.findById(2L).orElseThrow(NotFoundException::new);
+        assertThat(savedSession.getTitle()).isEqualTo(savedSession.getTitle());
+        LOGGER.debug("Session: {}", savedSession);
     }
 
+    @Test
+    @DisplayName("주어진 PaidSession을 저장히고 조회한다.")
+    void savePaidSessionAndFindById() {
+        LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
+        LocalDateTime endDate = startDate.plusMonths(2);
+        Session session = new PaidSession(3L, "TDD 자바 클린코드", 50000L, 60, startDate, endDate);
+        int count = sessionRepository.save(session);
+        assertThat(count).isEqualTo(1);
+        Session savedSession = sessionRepository.findById(3L).orElseThrow(NotFoundException::new);
+        assertThat(savedSession.getTitle()).isEqualTo(savedSession.getTitle());
+        LOGGER.debug("Session: {}", savedSession);
+    }
+
+    @Test
+    @DisplayName("FreeSession에 커버이미지를 등록한다")
+    void saveCoverImage() {
+//        LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
+//        LocalDateTime endDate = startDate.plusMonths(2);
+//
+//        Session session = new FreeSession(1L, "TDD 자바 클린코드", startDate, endDate);
+//        sessionRepository.save(session);
+//
+//        CoverImage image = new CoverImage("자바짱이야", "pdf", 100, 300, 200);
+//        session.uploadCoverImage(image);
+    }
 }
