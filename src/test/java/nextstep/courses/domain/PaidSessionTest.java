@@ -19,7 +19,6 @@ class PaidSessionTest {
     void enrollTest01() {
         Session session = new PaidSession("TDD/클린코드", 1000L, 1, startDate, endDate);
         Payment payment1 = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), 1000L);
-
         session.openEnrollment();
         session.enroll(NsUserTest.SANJIGI, payment1);
         assertThatThrownBy(() -> {
@@ -31,12 +30,12 @@ class PaidSessionTest {
     @Test
     @DisplayName("유료 강의는 수강생이 결제한 금액과 수강료가 일치할 때 수강 신청이 가능하다.")
     void enrollTest02() {
-        Session session = new PaidSession("TDD/클린코드", 1000L, 1, startDate, endDate);
+        Session session = new PaidSession("TDD/클린코드", 1200L, 1, startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.JAVAJIGI.getId(), 1000L);
         session.openEnrollment();
         assertThatThrownBy(() -> {
             session.enroll(NsUserTest.JAVAJIGI, payment);
-        }).hasMessage("최대 수강 인원을 초과하였습니다.");
+        }).hasMessage("결제한 금액과 수강료가 일치하지 않습니다.");
     }
 
     @Test
@@ -44,7 +43,6 @@ class PaidSessionTest {
     void enrollTest03() {
         Session session = new PaidSession("TDD/클린코드", 1000L, 1, startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), 1000L);
-
         session.openEnrollment();
         session.enroll(NsUserTest.SANJIGI, payment);
     }
