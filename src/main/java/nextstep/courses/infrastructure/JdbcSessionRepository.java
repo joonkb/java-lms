@@ -1,6 +1,5 @@
 package nextstep.courses.infrastructure;
 
-import nextstep.courses.domain.FreeSession;
 import nextstep.courses.domain.PaidSession;
 import nextstep.courses.domain.Session;
 import nextstep.courses.domain.SessionRepository;
@@ -27,27 +26,8 @@ public class JdbcSessionRepository implements SessionRepository {
     public Optional<Session> findById(Long id) {
         String sql = "select id, title, session_type, session_status, price, max_enrollment, started_at, ended_at from session where id = ?";
         RowMapper<Session> rowMapper = (rs, rowNum) -> {
-            String sessionType = rs.getString("session_type");
-            if ("FREE".equals(sessionType)) {
-                return new FreeSession(
-                        rs.getLong("id"),
-                        rs.getString("title"),
-                        rs.getString("session_status"),
-                        rs.getTimestamp("started_at").toLocalDateTime(),
-                        rs.getTimestamp("ended_at").toLocalDateTime()
-                );
-            } else if ("PAID".equals(sessionType)) {
-                return new PaidSession(
-                        rs.getLong("id"),
-                        rs.getString("title"),
-                        rs.getString("session_status"),
-                        rs.getLong("price"),
-                        rs.getInt("max_enrollment"),
-                        rs.getTimestamp("started_at").toLocalDateTime(),
-                        rs.getTimestamp("ended_at").toLocalDateTime()
-                );
-            }
-            throw null;
+            Session session = SessionMapper.rowToSession(rs);
+            return session;
         };
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
