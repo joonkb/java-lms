@@ -10,6 +10,10 @@ import java.sql.SQLException;
 
 public class SessionMapper {
 
+    private SessionMapper() {
+
+    }
+
     public static Session rowToSession(ResultSet rs) throws SQLException {
         String sessionType = rs.getString("session_type");
         if ("FREE".equals(sessionType)) {
