@@ -54,6 +54,8 @@ create table session (
     title varchar(255) not null,
     session_type varchar(255),
     session_status varchar(255) default 'PREPARING',
+    progress_status varchar(255) default 'PREPARING',
+    recruitment_status varchar(255) default 'CLOSED',
     price bigint default 0 not null,
     max_enrollment bigint default 0 not null,
     started_at timestamp not null,
@@ -65,6 +67,7 @@ create table session_enrollment
 (
     user_id bigint,
     session_id bigint,
+    enrollment_status varchar(255) default 'PENDING',
     registered_at timestamp not null,
     primary key (session_id, user_id),
     foreign key (session_id) references session (id),
