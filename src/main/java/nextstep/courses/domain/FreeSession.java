@@ -4,6 +4,7 @@ import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class FreeSession extends Session {
 
@@ -24,8 +25,7 @@ public class FreeSession extends Session {
     }
 
     @Override
-    public void enroll(NsUser user, Payment payment) {
+    public void enroll(List<NsUser> students, Payment payment) {
         validateRecruitingStatus();
-        addStudent(user);
     }
 }

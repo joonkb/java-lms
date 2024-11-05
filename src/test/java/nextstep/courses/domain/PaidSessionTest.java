@@ -1,11 +1,13 @@
 package nextstep.courses.domain;
 
 import nextstep.payments.domain.Payment;
+import nextstep.users.domain.NsUser;
 import nextstep.users.domain.NsUserTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,33 +19,34 @@ class PaidSessionTest {
     @Test
     @DisplayName("유료 강의는 강의 최대수강 인원을 초과할 수 없다.")
     void enrollTest01() {
-        Session session = new PaidSession("TDD/클린코드", 1000L, 1, startDate, endDate);
-        Payment payment1 = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), 1000L);
+        List<NsUser> students = List.of(NsUserTest.JAVAJIGI, NsUserTest.SANJIGI);
+        Session session = new PaidSession("TDD/클린코드", 1000L, 2, startDate, endDate);
         session.openEnrollment();
-        session.enroll(NsUserTest.SANJIGI, payment1);
         assertThatThrownBy(() -> {
             Payment payment2 = new Payment(1L, session.getId(), NsUserTest.JAVAJIGI.getId(), 1000L);
-            session.enroll(NsUserTest.JAVAJIGI, payment2);
+            session.enroll(students, payment2);
         }).hasMessage("최대 수강 인원을 초과하였습니다.");
     }
 
     @Test
     @DisplayName("유료 강의는 수강생이 결제한 금액과 수강료가 일치할 때 수강 신청이 가능하다.")
     void enrollTest02() {
-        Session session = new PaidSession("TDD/클린코드", 1200L, 1, startDate, endDate);
+        List<NsUser> students = List.of(NsUserTest.JAVAJIGI);
+        Session session = new PaidSession("TDD/클린코드", 1200L, 2, startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.JAVAJIGI.getId(), 1000L);
         session.openEnrollment();
         assertThatThrownBy(() -> {
-            session.enroll(NsUserTest.JAVAJIGI, payment);
+            session.enroll(students, payment);
         }).hasMessage("결제한 금액과 수강료가 일치하지 않습니다.");
     }
 
     @Test
     @DisplayName("수강신청에 성공한다.")
     void enrollTest03() {
-        Session session = new PaidSession("TDD/클린코드", 1000L, 1, startDate, endDate);
+        List<NsUser> students = List.of(NsUserTest.SANJIGI);
+        Session session = new PaidSession("TDD/클린코드", 1000L, 5, startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), 1000L);
         session.openEnrollment();
-        session.enroll(NsUserTest.SANJIGI, payment);
+        session.enroll(students, payment);
     }
 }

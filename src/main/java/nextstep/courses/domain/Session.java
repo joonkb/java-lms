@@ -91,20 +91,12 @@ public abstract class Session {
         return type == SessionType.FREE;
     }
 
-    public abstract void enroll(NsUser user, Payment payment);
+    public abstract void enroll(List<NsUser> students, Payment payment);
 
     protected void validateRecruitingStatus() {
         if (!SessionStatus.canEnroll(status)) {
             throw new CannotRegisterException("현재 모집중인 상태가 아닙니다.");
         }
-    }
-
-    protected int getCurrentStudentCount() {
-        return students.size();
-    }
-
-    protected void addStudent(NsUser user) {
-        students.add(user);
     }
 
     public Long getPrice() {
