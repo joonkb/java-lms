@@ -1,9 +1,6 @@
 package nextstep.courses.service;
 
-import nextstep.courses.domain.CannotRegisterException;
-import nextstep.courses.domain.FreeSession;
-import nextstep.courses.domain.Session;
-import nextstep.courses.domain.SessionRepository;
+import nextstep.courses.domain.*;
 import nextstep.payments.domain.Payment;
 import nextstep.payments.service.PaymentService;
 import nextstep.qna.CannotDeleteException;
@@ -26,6 +23,9 @@ import static org.mockito.Mockito.when;
 class SessionServiceTest {
     @Mock
     private SessionRepository sessionRepository;
+
+    @Mock
+    private SessionEnrollmentRepository sessionEnrollmentRepository;
 
     @Mock
     private PaymentService paymentService;

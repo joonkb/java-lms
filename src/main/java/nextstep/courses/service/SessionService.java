@@ -1,20 +1,22 @@
 package nextstep.courses.service;
 
-import nextstep.courses.domain.CoverImage;
-import nextstep.courses.domain.CoverImageRepository;
-import nextstep.courses.domain.Session;
-import nextstep.courses.domain.SessionRepository;
+import nextstep.courses.domain.*;
 import nextstep.payments.domain.Payment;
 import nextstep.payments.service.PaymentService;
 import nextstep.qna.NotFoundException;
 import nextstep.users.domain.NsUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
+
 public class SessionService {
     @Resource(name = "sessionRepository")
     private SessionRepository sessionRepository;
+
+    @Resource(name = "sessionEnrollmentRepository")
+    private SessionEnrollmentRepository sessionEnrollmentRepository;
 
     @Resource(name = "coverImageRepository")
     private CoverImageRepository coverImageRepository;
@@ -27,7 +29,7 @@ public class SessionService {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundException::new);
         Payment payment = paymentService.payment(session, loginUser);
         session.enroll(loginUser, payment);
-        sessionRepository.enroll(sessionId, loginUser.getId());
+        sessionEnrollmentRepository.enrollStudent(sessionId, loginUser.getId());
     }
 
     @Transactional

@@ -1,9 +1,6 @@
 package nextstep.courses.infrastructure;
 
-import nextstep.courses.domain.FreeSession;
-import nextstep.courses.domain.PaidSession;
-import nextstep.courses.domain.Session;
-import nextstep.courses.domain.SessionRepository;
+import nextstep.courses.domain.*;
 import nextstep.qna.NotFoundException;
 import nextstep.users.domain.NsUser;
 import nextstep.users.infrastructure.JdbcUserRepository;
@@ -17,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,16 +27,19 @@ class SessionRepositoryTest {
 
     private SessionRepository sessionRepository;
 
+    private SessionEnrollmentRepository sessionEnrollmentRepository;
+
     private JdbcUserRepository userRepository;
 
     @BeforeEach
     void setUp() {
         sessionRepository = new JdbcSessionRepository(jdbcTemplate);
         userRepository = new JdbcUserRepository(jdbcTemplate);
+        sessionEnrollmentRepository = new JdbcSessionEnrollmentRepository(jdbcTemplate);
     }
 
     @Test
-    @DisplayName("주어진 FreeSession을 저장히고 조회한다.")
+    @DisplayName("주어진 FreeSession을 저장하고 조회한다.")
     void saveFreeSessionAndFindById() {
         LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
         LocalDateTime endDate = startDate.plusMonths(2);
@@ -55,7 +54,7 @@ class SessionRepositoryTest {
     }
 
     @Test
-    @DisplayName("주어진 PaidSession을 저장히고 조회한다.")
+    @DisplayName("주어진 PaidSession을 저장하고 조회한다.")
     void savePaidSessionAndFindById() {
         LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
         LocalDateTime endDate = startDate.plusMonths(2);
@@ -79,27 +78,7 @@ class SessionRepositoryTest {
         sessionRepository.save(session);
 
         NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
-        int count = sessionRepository.enroll(session.getId(), user.getId());
+        int count = sessionEnrollmentRepository.enrollStudent(session.getId(), user.getId());
         assertThat(count).isEqualTo(1);
-    }
-
-    @Test
-    @DisplayName("주어진 Session을 수강하고 있는 학생들을 조회한다.")
-    void enrollAndFindStudents() {
-        LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
-        LocalDateTime endDate = startDate.plusMonths(2);
-
-        Session session = new FreeSession(2L, "TDD 자바 클린코드", startDate, endDate);
-        sessionRepository.save(session);
-
-        NsUser user1 = userRepository.findByUserId("javajigi").orElseThrow();
-        NsUser user2 = userRepository.findByUserId("sanjigi").orElseThrow();
-
-        int result = 0;
-        result += sessionRepository.enroll(session.getId(), user1.getId());
-        result += sessionRepository.enroll(session.getId(), user2.getId());
-
-        List<NsUser> enrolledUsers = sessionRepository.findEnrolledUsers(session.getId());
-        assertThat(enrolledUsers).hasSize(result);
     }
 }
