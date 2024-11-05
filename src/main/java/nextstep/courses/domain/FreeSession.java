@@ -19,10 +19,6 @@ public class FreeSession extends Session {
         this(1L, title, startDate, endDate);
     }
 
-    public FreeSession(String title, SessionStatus status, LocalDateTime startDate, LocalDateTime endDate) {
-        this(1L, title, SessionType.FREE, status, startDate, endDate);
-    }
-
     public FreeSession(Long id, String title, String status, LocalDateTime startedAt, LocalDateTime endedAt) {
         this(id, title, SessionType.FREE, SessionStatus.valueOf(status), startedAt, endedAt);
     }
