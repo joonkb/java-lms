@@ -5,5 +5,5 @@ import java.util.Optional;
 public interface CoverImageRepository {
     Optional<CoverImage> findById(Long id);
 
-    int upload(CoverImage image);
+    int upload(Long id, CoverImage image);
 }

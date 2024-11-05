@@ -31,8 +31,8 @@ public class JdbcCoverImageRepository implements CoverImageRepository {
     }
 
     @Override
-    public int upload(CoverImage image) {
+    public int upload(Long sessionId, CoverImage image) {
         String sql = "insert into cover_image (session_id, title, format, fileSize, width, height) values(?, ?, ?, ?, ?, ?)";
-        return jdbcTemplate.update(sql, image.getId(), image.getTitle(), image.getFormat(), image.getFileSize(), image.getWidth(), image.getHeight());
+        return jdbcTemplate.update(sql, sessionId, image.getTitle(), image.getFormat(), image.getFileSize(), image.getWidth(), image.getHeight());
     }
 }

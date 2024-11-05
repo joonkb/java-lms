@@ -38,6 +38,6 @@ public class SessionService {
     public void uploadSessionImage(CoverImage image, long sessionId) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundException::new);
         session.uploadCoverImage(image);
-        coverImageRepository.upload(image);
+        coverImageRepository.upload(session.getId(), image);
     }
 }
