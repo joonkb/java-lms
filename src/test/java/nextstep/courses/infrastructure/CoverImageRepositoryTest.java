@@ -5,6 +5,7 @@ import nextstep.courses.domain.CoverImageRepository;
 import nextstep.courses.domain.Session;
 import nextstep.courses.domain.SessionRepository;
 import nextstep.qna.NotFoundException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,4 +45,21 @@ class CoverImageRepositoryTest {
         CoverImage savedImage = coverImageRepository.findById(image.getId()).get();
         assertThat(savedImage).isEqualTo(image);
     }
+    @Test
+    @DisplayName("주어진 강의에 커버 이미지를 두 번 등록한다")
+    void uploadImage() {
+
+        CoverImage image1 = new CoverImage("컴퓨터", "jpg", 514, 300, 200);
+        CoverImage image2 = new CoverImage("JAVA", "jpg", 724, 300, 200);
+
+        int uploadCount = 0;
+        Session findSession = sessionRepository.findById(4L).orElseThrow();
+        findSession.uploadCoverImage(image1);
+        uploadCount += coverImageRepository.upload(findSession.getId(), image1);
+
+        findSession.uploadCoverImage(image2);
+        uploadCount += coverImageRepository.upload(findSession.getId(), image2);
+        Assertions.assertThat(uploadCount).isEqualTo(2);
+    }
+
 }
