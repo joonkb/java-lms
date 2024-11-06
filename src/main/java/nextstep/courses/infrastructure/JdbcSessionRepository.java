@@ -1,17 +1,10 @@
 package nextstep.courses.infrastructure;
 
-import nextstep.courses.domain.PaidSession;
-import nextstep.courses.domain.Period;
-import nextstep.courses.domain.Session;
-import nextstep.courses.domain.SessionRepository;
-import nextstep.users.domain.NsUser;
+import nextstep.courses.domain.*;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Repository("sessionRepository")
@@ -25,7 +18,7 @@ public class JdbcSessionRepository implements SessionRepository {
 
     @Override
     public Optional<Session> findById(Long id) {
-        String sql = "select id, title, session_type, session_status, price, max_enrollment, started_at, ended_at from session where id = ?";
+        String sql = "select id, title, session_type, progress_status, recruitment_status, price, max_enrollment, started_at, ended_at from session where id = ?";
         RowMapper<Session> rowMapper = (rs, rowNum) -> {
             Session session = SessionMapper.rowToSession(rs);
             return session;
@@ -36,13 +29,15 @@ public class JdbcSessionRepository implements SessionRepository {
     @Override
     public int save(Session session) {
         if (session.isFreeSession()) {
-            String sql = "insert into session (id, title, session_type, session_status, started_at, ended_at) values(?, ?, ?, ?, ?, ?)";
+            String sql = "insert into session (id, title, session_type, progress_status, recruitment_status, started_at, ended_at) values(?, ?, ?, ?, ?, ?, ?)";
             Period period = session.getPeriod();
-            return jdbcTemplate.update(sql, session.getId(), session.getTitle(), session.getType().toString(), session.getStatus().toString(), period.getStartDate(), period.getEndDate());
+            SessionStatus status = session.getStatus();
+            return jdbcTemplate.update(sql, session.getId(), session.getTitle(), session.getType().toString(), status.getProgressStatus().toString(), status.getRecruitmentStatus().toString(), period.getStartDate(), period.getEndDate());
         }
-        String sql = "insert into session (id, title, session_type, session_status, max_enrollment, started_at, ended_at) values(?, ?, ?, ?, ?, ?, ?)";
+        String sql = "insert into session (id, title, session_type, progress_status, recruitment_status, max_enrollment, started_at, ended_at) values(?, ?, ?, ?, ?, ?, ?,?)";
         PaidSession paidSession = (PaidSession) session;
         Period period = paidSession.getPeriod();
-        return jdbcTemplate.update(sql, paidSession.getId(), paidSession.getTitle(), paidSession.getType().toString(), paidSession.getStatus().toString(), paidSession.getMaxEnrollment(), period.getStartDate(), period.getEndDate());
+        SessionStatus status = paidSession.getStatus();
+        return jdbcTemplate.update(sql, paidSession.getId(), paidSession.getTitle(), paidSession.getType().toString(), status.getProgressStatus().toString(), status.getRecruitmentStatus().toString(), paidSession.getMaxEnrollment(), period.getStartDate(), period.getEndDate());
     }
 }

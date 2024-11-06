@@ -3,7 +3,6 @@ package nextstep.courses.domain;
 import nextstep.payments.domain.Payment;
 import nextstep.users.domain.NsUser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Session {
@@ -14,20 +13,13 @@ public abstract class Session {
 
     private SessionType type;
 
-    private SessionStatus status = SessionStatus.PREPARING;
-
-    private SessionProgressStatus progressStatus;
-
-    private SessionRecruitmentStatus recruitmentStatus;
+    private SessionStatus status = new SessionStatus();
 
     private CoverImage image;
 
     protected Long price;
 
-    private List<NsUser> students = new ArrayList<>();
-
     private Period period;
-
 
     public Session(Long id, String title, SessionType type, SessionStatus status, Long price, Period period) {
         this.id = id;
@@ -78,13 +70,13 @@ public abstract class Session {
     }
 
     public void openEnrollment() {
-        this.status = SessionStatus.RECRUITING;
+        status.openSession();
     }
 
     public void uploadCoverImage(CoverImage image) {
         this.image = image;
     }
-
+    
     public boolean isFreeSession() {
         return type == SessionType.FREE;
     }
@@ -92,7 +84,7 @@ public abstract class Session {
     public abstract void enroll(List<NsUser> students, Payment payment);
 
     protected void validateRecruitingStatus() {
-        if (!SessionStatus.canEnroll(status)) {
+        if (!status.canEnroll()) {
             throw new CannotRegisterException("현재 모집중인 상태가 아닙니다.");
         }
     }

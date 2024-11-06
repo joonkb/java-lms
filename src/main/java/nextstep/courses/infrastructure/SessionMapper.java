@@ -20,7 +20,8 @@ public class SessionMapper {
             return new FreeSession(
                     rs.getLong("id"),
                     rs.getString("title"),
-                    rs.getString("session_status"),
+                    rs.getString("progress_status"),
+                    rs.getString("recruitment_status"),
                     rs.getTimestamp("started_at").toLocalDateTime(),
                     rs.getTimestamp("ended_at").toLocalDateTime()
             );
@@ -29,7 +30,8 @@ public class SessionMapper {
             return new PaidSession(
                     rs.getLong("id"),
                     rs.getString("title"),
-                    rs.getString("session_status"),
+                    rs.getString("progress_status"),
+                    rs.getString("recruitment_status"),
                     rs.getLong("price"),
                     rs.getInt("max_enrollment"),
                     rs.getTimestamp("started_at").toLocalDateTime(),

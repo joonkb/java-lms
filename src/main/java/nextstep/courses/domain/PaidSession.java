@@ -25,8 +25,12 @@ public class PaidSession extends Session {
         this.maxEnrollment = maxEnrollment;
     }
 
-    public PaidSession(Long id, String title, String status, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
-        this(id, title, SessionStatus.valueOf(status), price, maxEnrollment, startDate, endDate);
+    public PaidSession(Long id, String title, String progressStatus, String recruitmentStatus, Long price, int maxEnrollment, LocalDateTime startDate, LocalDateTime endDate) {
+        this(id, title, covertStringToStatusEnum(progressStatus, recruitmentStatus), price, maxEnrollment, startDate, endDate);
+    }
+
+    private static SessionStatus covertStringToStatusEnum(String progressStatus, String recruitmentStatus) {
+        return new SessionStatus(SessionProgressStatus.valueOf(progressStatus), SessionRecruitmentStatus.valueOf(recruitmentStatus));
     }
 
     public int getMaxEnrollment() {
