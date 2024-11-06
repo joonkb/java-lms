@@ -49,7 +49,7 @@ public class JdbcSessionEnrollmentRepository implements SessionEnrollmentReposit
 
     @Override
     public int updateStudentEnrollmentStatus(SessionStudent student, EnrollmentStatus status) {
-        String sql = "update from session_enrollment set enrollment_status = ? where user_id = ? and session_id = ?";
+        String sql = "update session_enrollment set enrollment_status = ? where user_id = ? and session_id = ?";
         return jdbcTemplate.update(sql, status.toString(), student.getStudentId(), student.getSessionId());
     }
 

@@ -25,4 +25,13 @@ public class SessionStudent {
     public Long getSessionId() {
         return sessionId;
     }
+
+    @Override
+    public String toString() {
+        return "SessionStudent{" +
+                "studentId=" + studentId +
+                ", sessionId=" + sessionId +
+                ", status=" + status +
+                '}';
+    }
 }

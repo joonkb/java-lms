@@ -1,8 +1,6 @@
 package nextstep.courses.infrastructure;
 
 import nextstep.courses.domain.*;
-import nextstep.courses.infrastructure.JdbcSessionEnrollmentRepository;
-import nextstep.courses.infrastructure.JdbcSessionRepository;
 import nextstep.users.domain.NsUser;
 import nextstep.users.infrastructure.JdbcUserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @JdbcTest
 class SessionEnrollmentRepositoryTest {
 
+    private static final long SAVED_SESSION_ID = 4L;
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionRepository.class);
 
     @Autowired
@@ -61,8 +60,8 @@ class SessionEnrollmentRepositoryTest {
     }
 
     @Test
-    @DisplayName("해당 세션에 신청한 학생들을 조회한다.")
-    void enrollAndFindStudents() {
+    @DisplayName("해당 세션에 신청 대기중인 학생을 조회한다.")
+    void findPendingStudents() {
 
         LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
         LocalDateTime endDate = startDate.plusMonths(2);
@@ -71,17 +70,39 @@ class SessionEnrollmentRepositoryTest {
         sessionRepository.save(session);
 
         NsUser user1 = userRepository.findByUserId("javajigi").orElseThrow();
-        NsUser user2 = userRepository.findByUserId("sanjigi").orElseThrow();
+        sessionEnrollmentRepository.enrollStudent(session.getId(), user1.getId());
 
-        sessionEnrollmentRepository.findStudentsByEnrollmentStatus(session.getId(), EnrollmentStatus.PENDING);
+        List<SessionStudent> pendingStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(session.getId(), EnrollmentStatus.PENDING);
+        assertThat(pendingStudents).hasSize(1);
+    }
 
+    @Test
+    @DisplayName("해당 세션에 신청 대기중인 학생을 조회하여, 선발된 인원을 승인한다.")
+    void findPendingStudentsAndApprove() {
+        List<SessionStudent> pendingStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(SAVED_SESSION_ID, EnrollmentStatus.PENDING);
+        LOGGER.info("pendingStudents = {} ", pendingStudents);
+        assertThat(pendingStudents).hasSize(1);
 
+        SessionStudent pendingStudent = pendingStudents.get(0);
+        sessionEnrollmentRepository.updateStudentEnrollmentStatus(pendingStudent, EnrollmentStatus.APPROVED);
 
-        int result = 0;
-        result += sessionEnrollmentRepository.enrollStudent(session.getId(), user1.getId());
-        result += sessionEnrollmentRepository.enrollStudent(session.getId(), user2.getId());
+        List<SessionStudent> approvedStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(SAVED_SESSION_ID, EnrollmentStatus.APPROVED);
+        assertThat(pendingStudents).hasSize(1);
+        LOGGER.info("approvedStudents = {} ", approvedStudents);
+    }
 
-        List<SessionStudent> enrolledUsers = sessionEnrollmentRepository.findStudentsBySessionId(session.getId());
-        assertThat(enrolledUsers).hasSize(result);
+    @Test
+    @DisplayName("해당 세션에 신청 대기중인 학생을 조회하여, 선발된 인원을 취소한다.")
+    void findPendingStudentsAndCancel() {
+        List<SessionStudent> pendingStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(SAVED_SESSION_ID, EnrollmentStatus.PENDING);
+        LOGGER.info("pendingStudents = {} ", pendingStudents);
+        assertThat(pendingStudents).hasSize(1);
+
+        SessionStudent pendingStudent = pendingStudents.get(0);
+        sessionEnrollmentRepository.updateStudentEnrollmentStatus(pendingStudent, EnrollmentStatus.APPROVED);
+
+        List<SessionStudent> canceledStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(SAVED_SESSION_ID, EnrollmentStatus.APPROVED);
+        assertThat(pendingStudents).hasSize(1);
+        LOGGER.info("canceledStudents = {} ", canceledStudents);
     }
 }
