@@ -84,7 +84,8 @@ class SessionEnrollmentRepositoryTest {
         assertThat(pendingStudents).hasSize(1);
 
         SessionStudent pendingStudent = pendingStudents.get(0);
-        sessionEnrollmentRepository.updateStudentEnrollmentStatus(pendingStudent, EnrollmentStatus.APPROVED);
+        pendingStudent.updateEnrollmentStatus(EnrollmentStatus.APPROVED);
+        sessionEnrollmentRepository.updateStudentEnrollmentStatus(pendingStudent);
 
         List<SessionStudent> approvedStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(SAVED_SESSION_ID, EnrollmentStatus.APPROVED);
         assertThat(pendingStudents).hasSize(1);
@@ -99,7 +100,8 @@ class SessionEnrollmentRepositoryTest {
         assertThat(pendingStudents).hasSize(1);
 
         SessionStudent pendingStudent = pendingStudents.get(0);
-        sessionEnrollmentRepository.updateStudentEnrollmentStatus(pendingStudent, EnrollmentStatus.APPROVED);
+        pendingStudent.updateEnrollmentStatus(EnrollmentStatus.REJECTED);
+        sessionEnrollmentRepository.updateStudentEnrollmentStatus(pendingStudent);
 
         List<SessionStudent> canceledStudents = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(SAVED_SESSION_ID, EnrollmentStatus.APPROVED);
         assertThat(pendingStudents).hasSize(1);

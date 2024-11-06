@@ -5,7 +5,6 @@ import nextstep.payments.domain.Payment;
 import nextstep.payments.service.PaymentService;
 import nextstep.qna.NotFoundException;
 import nextstep.users.domain.NsUser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -38,5 +37,12 @@ public class SessionService {
     public void uploadSessionImage(CoverImage image, long sessionId) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundException::new);
         coverImageRepository.upload(session.getId(), image);
+    }
+
+    @Transactional
+    public void updateEnrollmentStatus(SessionStudent student, String status) {
+        SessionStudent findStudent = sessionEnrollmentRepository.findStudentById(student);
+        findStudent.updateEnrollmentStatus(EnrollmentStatus.valueOf(status));
+        sessionEnrollmentRepository.updateStudentEnrollmentStatus(student);
     }
 }

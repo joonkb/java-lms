@@ -3,7 +3,6 @@ package nextstep.courses.infrastructure;
 import nextstep.courses.domain.EnrollmentStatus;
 import nextstep.courses.domain.SessionEnrollmentRepository;
 import nextstep.courses.domain.SessionStudent;
-import nextstep.users.domain.NsUser;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -28,6 +27,16 @@ public class JdbcSessionEnrollmentRepository implements SessionEnrollmentReposit
     }
 
     @Override
+    public SessionStudent findStudentById(SessionStudent student) {
+        String sql = "select user_id, session_id, enrollment_status from session_enrollment where user_id = ? and session_id = ?";
+        RowMapper<SessionStudent> rowMapper = (rs, rowNum) -> new SessionStudent(
+                rs.getLong(1),
+                rs.getLong(2),
+                rs.getString(3));
+        return jdbcTemplate.queryForObject(sql, rowMapper, student.getStudentId(), student.getSessionId());
+    }
+
+    @Override
     public List<SessionStudent> findStudentsBySessionId(Long sessionId) {
         String sql = "select user_id, session_id, enrollment_status from session_enrollment where session_id = ?";
         RowMapper<SessionStudent> rowMapper = (rs, rowNum) -> new SessionStudent(
@@ -48,8 +57,9 @@ public class JdbcSessionEnrollmentRepository implements SessionEnrollmentReposit
     }
 
     @Override
-    public int updateStudentEnrollmentStatus(SessionStudent student, EnrollmentStatus status) {
+    public int updateStudentEnrollmentStatus(SessionStudent student) {
         String sql = "update session_enrollment set enrollment_status = ? where user_id = ? and session_id = ?";
+        EnrollmentStatus status = student.getStatus();
         return jdbcTemplate.update(sql, status.toString(), student.getStudentId(), student.getSessionId());
     }
 

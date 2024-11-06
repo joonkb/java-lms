@@ -18,12 +18,20 @@ public class SessionStudent {
         this.status = EnrollmentStatus.valueOf(status);
     }
 
+    public void updateEnrollmentStatus(EnrollmentStatus status) {
+        this.status = status;
+    }
+
     public Long getStudentId() {
         return studentId;
     }
 
     public Long getSessionId() {
         return sessionId;
+    }
+
+    public EnrollmentStatus getStatus() {
+        return status;
     }
 
     @Override
