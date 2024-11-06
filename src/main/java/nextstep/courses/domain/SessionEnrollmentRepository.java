@@ -9,4 +9,8 @@ public interface SessionEnrollmentRepository {
     int enrollStudent(Long sessionId, Long userId);
 
     List<SessionStudent> findStudentsBySessionId(Long sessionId);
+
+    List<SessionStudent> findStudentsByEnrollmentStatus(Long sessionId, EnrollmentStatus status);
+
+    int updateStudentEnrollmentStatus(SessionStudent student, EnrollmentStatus status);
 }

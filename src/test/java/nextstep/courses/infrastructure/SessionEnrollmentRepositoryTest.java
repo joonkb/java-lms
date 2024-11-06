@@ -1,5 +1,6 @@
-package nextstep.courses.domain;
+package nextstep.courses.infrastructure;
 
+import nextstep.courses.domain.*;
 import nextstep.courses.infrastructure.JdbcSessionEnrollmentRepository;
 import nextstep.courses.infrastructure.JdbcSessionRepository;
 import nextstep.users.domain.NsUser;
@@ -50,6 +51,31 @@ class SessionEnrollmentRepositoryTest {
 
         NsUser user1 = userRepository.findByUserId("javajigi").orElseThrow();
         NsUser user2 = userRepository.findByUserId("sanjigi").orElseThrow();
+
+        int result = 0;
+        result += sessionEnrollmentRepository.enrollStudent(session.getId(), user1.getId());
+        result += sessionEnrollmentRepository.enrollStudent(session.getId(), user2.getId());
+
+        List<SessionStudent> enrolledUsers = sessionEnrollmentRepository.findStudentsBySessionId(session.getId());
+        assertThat(enrolledUsers).hasSize(result);
+    }
+
+    @Test
+    @DisplayName("해당 세션에 신청한 학생들을 조회한다.")
+    void enrollAndFindStudents() {
+
+        LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
+        LocalDateTime endDate = startDate.plusMonths(2);
+
+        Session session = new FreeSession(2L, "TDD 자바 클린코드", startDate, endDate);
+        sessionRepository.save(session);
+
+        NsUser user1 = userRepository.findByUserId("javajigi").orElseThrow();
+        NsUser user2 = userRepository.findByUserId("sanjigi").orElseThrow();
+
+        sessionEnrollmentRepository.findStudentsByEnrollmentStatus(session.getId(), EnrollmentStatus.PENDING);
+
+
 
         int result = 0;
         result += sessionEnrollmentRepository.enrollStudent(session.getId(), user1.getId());

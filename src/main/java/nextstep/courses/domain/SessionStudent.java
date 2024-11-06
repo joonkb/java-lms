@@ -17,4 +17,12 @@ public class SessionStudent {
         this.sessionId = sessionId;
         this.status = EnrollmentStatus.valueOf(status);
     }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
 }
