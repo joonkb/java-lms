@@ -29,7 +29,7 @@ public class FreeSession extends Session {
     }
 
     @Override
-    public void enroll(List<NsUser> students, Payment payment) {
+    public void enroll(List<SessionStudent> students, Payment payment) {
         validateRecruitingStatus();
     }
 }

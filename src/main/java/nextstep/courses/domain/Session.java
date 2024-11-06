@@ -85,7 +85,7 @@ public abstract class Session {
         return type == SessionType.FREE;
     }
 
-    public abstract void enroll(List<NsUser> students, Payment payment);
+    public abstract void enroll(List<SessionStudent> students, Payment payment);
 
     protected void validateRecruitingStatus() {
         if (!status.canEnroll()) {

@@ -21,7 +21,8 @@ class FreeSessionTest {
     void enrollTest01() {
         Session session = new FreeSession("TDD/클린코드", startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.JAVAJIGI.getId(), 0L);
-        List<NsUser> students = List.of(NsUserTest.JAVAJIGI);
+        SessionStudent student = new SessionStudent(NsUserTest.JAVAJIGI.getId(), 1L, EnrollmentStatus.APPROVED);
+        List<SessionStudent> students = List.of(student);
         assertThatThrownBy(() -> {
             session.enroll(students, payment);
         }).hasMessage("현재 모집중인 상태가 아닙니다.");
@@ -32,7 +33,8 @@ class FreeSessionTest {
     void 수강신청_성공() {
         Session session = new FreeSession("TDD/클린코드", startDate, endDate);
         Payment payment = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), 0L);
-        List<NsUser> students = List.of(NsUserTest.JAVAJIGI);
+        SessionStudent student = new SessionStudent(NsUserTest.JAVAJIGI.getId(), 1L, EnrollmentStatus.APPROVED);
+        List<SessionStudent> students = List.of(student);
         session.openEnrollment();
         session.enroll(students, payment);
     }

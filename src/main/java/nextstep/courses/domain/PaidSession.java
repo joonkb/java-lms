@@ -38,11 +38,11 @@ public class PaidSession extends Session {
     }
 
     @Override
-    public void enroll(List<NsUser> students, Payment payment) {
+    public void enroll(List<SessionStudent> students, Payment payment) {
         canEnroll(students, payment);
     }
 
-    private void canEnroll(List<NsUser> students, Payment payment) {
+    private void canEnroll(List<SessionStudent> students, Payment payment) {
 
         validateRecruitingStatus();
 
@@ -55,7 +55,7 @@ public class PaidSession extends Session {
         }
     }
 
-    private boolean isOverMaxEnrollment(List<NsUser> students) {
+    private boolean isOverMaxEnrollment(List<SessionStudent> students) {
         return students.size() >= maxEnrollment;
     }
 }

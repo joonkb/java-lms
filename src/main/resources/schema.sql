@@ -68,7 +68,6 @@ create table session_enrollment
     user_id bigint,
     session_id bigint,
     enrollment_status varchar(255) default 'PENDING',
-    registered_at timestamp not null,
     primary key (session_id, user_id),
     foreign key (session_id) references session (id),
     foreign key (user_id) references ns_user (id)

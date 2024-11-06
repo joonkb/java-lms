@@ -4,6 +4,7 @@ import nextstep.courses.domain.*;
 import nextstep.payments.domain.Payment;
 import nextstep.qna.NotFoundException;
 import nextstep.users.domain.NsUser;
+import nextstep.users.domain.NsUserTest;
 import nextstep.users.infrastructure.JdbcUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,8 @@ class SessionRepositoryTest {
     private SessionEnrollmentRepository sessionEnrollmentRepository;
 
     private JdbcUserRepository userRepository;
+
+    private SessionStudent student1 = new SessionStudent(NsUserTest.JAVAJIGI.getId(), 1L, EnrollmentStatus.APPROVED);
 
     @BeforeEach
     void setUp() {
@@ -113,7 +116,7 @@ class SessionRepositoryTest {
         sessionRepository.save(session);
 
         NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
-        List<NsUser> students = List.of(user);
+        List<SessionStudent> students = List.of(student1);
         assertThatThrownBy(() -> {
             session.enroll(students, new Payment(1L, session.getId(), user.getId(), 0L));
         });

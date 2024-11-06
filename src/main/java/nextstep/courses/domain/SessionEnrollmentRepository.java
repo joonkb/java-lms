@@ -8,5 +8,5 @@ public interface SessionEnrollmentRepository {
 
     int enrollStudent(Long sessionId, Long userId);
 
-    List<NsUser> findStudentsBySessionId(Long sessionId);
+    List<SessionStudent> findStudentsBySessionId(Long sessionId);
 }

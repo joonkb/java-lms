@@ -55,7 +55,7 @@ class SessionEnrollmentRepositoryTest {
         result += sessionEnrollmentRepository.enrollStudent(session.getId(), user1.getId());
         result += sessionEnrollmentRepository.enrollStudent(session.getId(), user2.getId());
 
-        List<NsUser> enrolledUsers = sessionEnrollmentRepository.findStudentsBySessionId(session.getId());
+        List<SessionStudent> enrolledUsers = sessionEnrollmentRepository.findStudentsBySessionId(session.getId());
         assertThat(enrolledUsers).hasSize(result);
     }
 }
