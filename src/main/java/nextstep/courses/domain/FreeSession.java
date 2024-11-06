@@ -1,7 +1,6 @@
 package nextstep.courses.domain;
 
 import nextstep.payments.domain.Payment;
-import nextstep.users.domain.NsUser;
 
 import java.time.LocalDateTime;
 import java.util.List;
