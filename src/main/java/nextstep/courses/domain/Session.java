@@ -1,7 +1,6 @@
 package nextstep.courses.domain;
 
 import nextstep.payments.domain.Payment;
-import nextstep.users.domain.NsUser;
 
 import java.util.List;
 
@@ -14,8 +13,6 @@ public abstract class Session {
     private SessionType type;
 
     private SessionStatus status = new SessionStatus();
-
-    private CoverImage image;
 
     protected Long price;
 
@@ -75,10 +72,6 @@ public abstract class Session {
 
     public void startSession() {
         status.startSession();
-    }
-
-    public void uploadCoverImage(CoverImage image) {
-        this.image = image;
     }
 
     public boolean isFreeSession() {

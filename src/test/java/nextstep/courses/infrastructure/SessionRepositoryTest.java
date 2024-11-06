@@ -99,9 +99,9 @@ class SessionRepositoryTest {
         session.openEnrollment();
         sessionRepository.save(session);
 
-        NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
-        List<NsUser> students = List.of(user);
-        int count = sessionEnrollmentRepository.enrollStudent(session.getId(), user.getId());
+        List<SessionStudent> students = List.of(student1);
+        session.enroll(students, new Payment(1L, session.getId(), student1.getStudentId(), 0L));
+        int count = sessionEnrollmentRepository.enrollStudent(session.getId(), student1.getStudentId());
         assertThat(count).isEqualTo(1);
     }
 
@@ -115,10 +115,9 @@ class SessionRepositoryTest {
         session.startSession();
         sessionRepository.save(session);
 
-        NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
         List<SessionStudent> students = List.of(student1);
         assertThatThrownBy(() -> {
-            session.enroll(students, new Payment(1L, session.getId(), user.getId(), 0L));
+            session.enroll(students, new Payment(1L, session.getId(), student1.getStudentId(), 0L));
         });
     }
 }
