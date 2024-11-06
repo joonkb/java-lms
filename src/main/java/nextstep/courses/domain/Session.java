@@ -73,10 +73,14 @@ public abstract class Session {
         status.openSession();
     }
 
+    public void startSession() {
+        status.startSession();
+    }
+
     public void uploadCoverImage(CoverImage image) {
         this.image = image;
     }
-    
+
     public boolean isFreeSession() {
         return type == SessionType.FREE;
     }

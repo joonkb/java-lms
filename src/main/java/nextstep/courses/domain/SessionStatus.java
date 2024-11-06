@@ -26,6 +26,10 @@ public class SessionStatus {
         this.recruitmentStatus = SessionRecruitmentStatus.OPEN;
     }
 
+    public void startSession() {
+        progressStatus = SessionProgressStatus.PROGRESS;
+    }
+
     public boolean canEnroll() {
         return recruitmentStatus == SessionRecruitmentStatus.OPEN;
     }

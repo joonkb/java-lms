@@ -1,6 +1,7 @@
 package nextstep.courses.infrastructure;
 
 import nextstep.courses.domain.*;
+import nextstep.payments.domain.Payment;
 import nextstep.qna.NotFoundException;
 import nextstep.users.domain.NsUser;
 import nextstep.users.infrastructure.JdbcUserRepository;
@@ -14,8 +15,10 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class SessionRepositoryTest {
@@ -80,5 +83,39 @@ class SessionRepositoryTest {
         NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
         int count = sessionEnrollmentRepository.enrollStudent(session.getId(), user.getId());
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("진행중이면서 모집중인 Session에 수강신청을 할 수 있다.")
+    void enrollStudentTest01() {
+        LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
+        LocalDateTime endDate = startDate.plusMonths(2);
+
+        Session session = new FreeSession(2L, "TDD 자바 클린코드", startDate, endDate);
+        session.startSession();
+        session.openEnrollment();
+        sessionRepository.save(session);
+
+        NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
+        List<NsUser> students = List.of(user);
+        int count = sessionEnrollmentRepository.enrollStudent(session.getId(), user.getId());
+        assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("진행중이면서 비모집중인 Session에 수강신청을 할 수 없다.")
+    void enrollStudentTest02() {
+        LocalDateTime startDate = LocalDateTime.of(2024, 11, 1, 1, 1);
+        LocalDateTime endDate = startDate.plusMonths(2);
+
+        Session session = new FreeSession(2L, "TDD 자바 클린코드", startDate, endDate);
+        session.startSession();
+        sessionRepository.save(session);
+
+        NsUser user = userRepository.findByUserId("javajigi").orElseThrow();
+        List<NsUser> students = List.of(user);
+        assertThatThrownBy(() -> {
+            session.enroll(students, new Payment(1L, session.getId(), user.getId(), 0L));
+        });
     }
 }
