@@ -30,11 +30,15 @@ class SessionServiceTest {
     @Mock
     private PaymentService paymentService;
 
+    @Mock
+    private CoverImageRepository coverImageRepository;
+
     @InjectMocks
     private SessionService sessionService;
 
-    Session session;
-    Payment payment;
+    private Session session;
+    private Payment payment;
+    private CoverImage image;
 
     @BeforeEach
     void setUp() {
@@ -42,6 +46,7 @@ class SessionServiceTest {
         LocalDateTime endDate = startDate.plusMonths(2);
         session = new FreeSession(1L, "스프링 웹개발", startDate, endDate);
         payment = new Payment(1L, session.getId(), NsUserTest.SANJIGI.getId(), session.getPrice());
+        image = new CoverImage(1L, "스프링 JPA", "jpg", 512, 300, 200);
     }
 
     @Test
@@ -63,5 +68,13 @@ class SessionServiceTest {
         assertThatThrownBy(() -> {
             sessionService.enrollSession(NsUserTest.SANJIGI, session.getId());
         }).isInstanceOf(CannotRegisterException.class);
+    }
+
+    @Test
+    @DisplayName("이미지를 업로드에 성공한다.")
+    void uploadImage() {
+        when(sessionRepository.findById(session.getId())).thenReturn(Optional.of(session));
+
+        sessionService.uploadSessionImage(image, session.getId());
     }
 }

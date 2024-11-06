@@ -28,7 +28,7 @@ public class SessionService {
     public void enrollSession(NsUser loginUser, long sessionId) {
         Session session = sessionRepository.findById(sessionId).orElseThrow(NotFoundException::new);
         Payment payment = paymentService.payment(session, loginUser);
-        List<SessionStudent> students = sessionEnrollmentRepository.findStudentsBySessionId(sessionId);
+        List<SessionStudent> students = sessionEnrollmentRepository.findStudentsByEnrollmentStatus(sessionId, EnrollmentStatus.PENDING);
         session.enroll(students, payment);
         sessionEnrollmentRepository.enrollStudent(sessionId, loginUser.getId());
     }
